@@ -3,11 +3,9 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, Gamepad2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const FeaturedGame: React.FC = () => {
-  const navigate = useNavigate();
-  
   // This would typically come from a backend or context
   const featuredGame = {
     name: "Musical Freeze Dance",
@@ -41,12 +39,13 @@ const FeaturedGame: React.FC = () => {
           </span>
         </div>
         
-        <Button 
-          onClick={() => navigate(`/results?featured=${featuredGame.id}`)}
-          className="bg-gradient-to-r from-kid-purple to-kid-blue hover:opacity-90 transition-opacity"
-        >
-          <Gamepad2 className="mr-2 h-4 w-4" /> Play Now
-        </Button>
+        <Link to={`/results?featured=${featuredGame.id}`}>
+          <Button 
+            className="bg-gradient-to-r from-kid-purple to-kid-blue hover:opacity-90 transition-opacity"
+          >
+            <Gamepad2 className="mr-2 h-4 w-4" /> Play Now
+          </Button>
+        </Link>
       </div>
     </Card>
   );
