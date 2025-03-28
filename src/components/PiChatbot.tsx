@@ -1,9 +1,10 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Mic, MessageCircle, X } from 'lucide-react';
+import { Mic, MessageCircle, X, Volume2, VolumeX } from 'lucide-react';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const PiChatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +14,11 @@ const PiChatbot: React.FC = () => {
   const [input, setInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const isMobile = useIsMobile();
 
   // Initialize speech recognition
   const initSpeechRecognition = () => {
@@ -64,12 +69,70 @@ const PiChatbot: React.FC = () => {
     }
   };
 
+  const speakResponse = (text: string) => {
+    if (isMuted) return;
+    
+    if ('speechSynthesis' in window) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Try to find a female voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const femaleVoice = voices.find(voice => 
+        voice.name.includes('female') || 
+        voice.name.includes('woman') || 
+        voice.name.includes('girl') ||
+        voice.name.toLowerCase().includes('samantha')
+      );
+      
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      }
+      
+      // Configure speech parameters for a kid-friendly voice
+      utterance.pitch = 1.2;  // Slightly higher pitch
+      utterance.rate = 1.0;   // Normal speed
+      utterance.volume = 1.0; // Full volume
+      
+      utterance.onstart = () => {
+        setIsSpeaking(true);
+      };
+      
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        speechSynthesisRef.current = null;
+      };
+      
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        speechSynthesisRef.current = null;
+        toast.error('Speech synthesis error occurred');
+      };
+      
+      speechSynthesisRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
+    } else {
+      toast.error('Speech synthesis is not supported in your browser');
+    }
+  };
+
+  const toggleMute = () => {
+    if (isSpeaking && !isMuted) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+    setIsMuted(!isMuted);
+  };
+
   const handleSend = async (text = input) => {
     if (!text.trim()) return;
     
     // Add user message to chat
-    const newMessages = [...messages, { role: 'user', content: text }];
-    setMessages(newMessages);
+    const newUserMessage = { role: 'user' as const, content: text };
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
     setInput('');
     setIsProcessing(true);
 
@@ -78,8 +141,12 @@ const PiChatbot: React.FC = () => {
       setTimeout(() => {
         // Example response - in production, this would be from the Pi.ai API
         const piResponse = getPiResponse(text);
-        setMessages([...newMessages, { role: 'assistant', content: piResponse }]);
+        const assistantMessage = { role: 'assistant' as const, content: piResponse };
+        setMessages([...updatedMessages, assistantMessage]);
         setIsProcessing(false);
+        
+        // Speak the response
+        speakResponse(piResponse);
       }, 1000);
       
       // For a real implementation with Pi.ai API:
@@ -90,6 +157,7 @@ const PiChatbot: React.FC = () => {
       // });
       // const data = await response.json();
       // setMessages([...newMessages, { role: 'assistant', content: data.response }]);
+      // speakResponse(data.response);
       
     } catch (error) {
       console.error('Error sending message to Pi:', error);
@@ -97,6 +165,23 @@ const PiChatbot: React.FC = () => {
       setIsProcessing(false);
     }
   };
+
+  // Initialize speech synthesis voices when component mounts
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      // Load voices
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+      
+      // Clean up on unmount
+      return () => {
+        if (speechSynthesisRef.current) {
+          window.speechSynthesis.cancel();
+        }
+      };
+    }
+  }, []);
 
   // Temporary function to generate responses for demo purposes
   const getPiResponse = (message: string): string => {
@@ -126,13 +211,23 @@ const PiChatbot: React.FC = () => {
             <MessageCircle className="h-7 w-7 text-white" />
           </Button>
         </SheetTrigger>
-        <SheetContent className="w-full sm:max-w-md rounded-t-2xl pt-16 border-kid-purple border-2" side="bottom">
+        <SheetContent className={`w-full sm:max-w-md rounded-t-2xl pt-16 border-kid-purple border-2 ${isMobile ? 'font-sans' : 'font-comic'}`} side="bottom">
           <div className="flex flex-col h-[70vh]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-kid-purple">Chat with Pi</h2>
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-                <X className="h-6 w-6" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={toggleMute}
+                  className={isMuted ? 'text-red-500' : 'text-green-500'}
+                >
+                  {isMuted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+                  <X className="h-6 w-6" />
+                </Button>
+              </div>
             </div>
             
             <div className="flex-1 overflow-y-auto py-4 px-1 space-y-4 mb-4 bg-gray-50 rounded-lg">

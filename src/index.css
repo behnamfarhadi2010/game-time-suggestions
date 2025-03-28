@@ -74,11 +74,18 @@
 
   body {
     @apply bg-kid-background text-foreground;
-    font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold;
+  }
+  
+  /* Apply Comic Sans only to desktop version */
+  @media (min-width: 768px) {
+    body {
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+    }
   }
 }
 
