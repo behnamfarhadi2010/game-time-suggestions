@@ -4,27 +4,64 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { findGames, Game } from '../data/gameData';
 import Header from '../components/Header';
 import GameCard from '../components/GameCard';
+import ApiKeyInput from '../components/ApiKeyInput';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, Clock, Gamepad2, Brain } from 'lucide-react';
+import { enhanceGameSuggestions, getGeminiApiKey } from '../services/aiService';
+import { toast } from 'sonner';
 
 const Results: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAiEnabled, setIsAiEnabled] = useState(false);
+  const [isAiProcessing, setIsAiProcessing] = useState(false);
 
   const age = Number(searchParams.get('age') || '4');
   const time = Number(searchParams.get('time') || '15');
 
+  // Check if AI can be used
+  useEffect(() => {
+    const hasApiKey = !!getGeminiApiKey();
+    setIsAiEnabled(hasApiKey);
+  }, []);
+
   useEffect(() => {
     // Simulate loading delay
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       const foundGames = findGames(age, time);
       setGames(foundGames);
       setLoading(false);
+      
+      // If API key is available, enhance suggestions automatically
+      if (isAiEnabled && foundGames.length > 0) {
+        enhanceWithAi(foundGames);
+      }
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [age, time]);
+  }, [age, time, isAiEnabled]);
+
+  const enhanceWithAi = async (gamesList: Game[]) => {
+    if (!getGeminiApiKey()) {
+      toast.error("Please add your Gemini API key first");
+      return;
+    }
+    
+    setIsAiProcessing(true);
+    toast.info("AI is analyzing your game options...");
+    
+    try {
+      const enhancedGames = await enhanceGameSuggestions(gamesList, age, time);
+      setGames(enhancedGames);
+      toast.success("Games have been sorted by AI recommendation");
+    } catch (error) {
+      console.error("Error enhancing game suggestions:", error);
+      toast.error("Failed to get AI recommendations");
+    } finally {
+      setIsAiProcessing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -43,12 +80,26 @@ const Results: React.FC = () => {
                 <Clock className="h-4 w-4" /> {time} minutes available
               </p>
             </div>
-            <Link to="/">
-              <Button variant="outline" className="rounded-full">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                New Search
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-2">
+              {!loading && games.length > 0 && (
+                <Button 
+                  variant="outline" 
+                  className="rounded-full"
+                  onClick={() => enhanceWithAi(games)}
+                  disabled={isAiProcessing || !getGeminiApiKey()}
+                >
+                  <Brain className="mr-2 h-4 w-4" />
+                  {isAiProcessing ? 'Processing...' : 'Get AI Recommendations'}
+                </Button>
+              )}
+              <ApiKeyInput />
+              <Link to="/">
+                <Button variant="outline" className="rounded-full">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  New Search
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {loading ? (
