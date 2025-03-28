@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,7 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from '@/components/ui/carousel';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 
 interface Story {
   id: string;
@@ -24,9 +23,7 @@ interface Story {
 const BedtimeStories: React.FC = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
   
-  // Expanded collection of bedtime stories from the requested channels
   const stories: Story[] = [
-    // @FairyTales.English
     {
       id: '1',
       title: 'Cinderella - Fairy Tale',
@@ -59,7 +56,6 @@ const BedtimeStories: React.FC = () => {
       duration: '11 mins',
       channel: '@FairyTales.English'
     },
-    // @Snugglekids
     {
       id: '5',
       title: 'The Three Little Pigs',
@@ -92,7 +88,6 @@ const BedtimeStories: React.FC = () => {
       duration: '10 mins',
       channel: '@Snugglekids'
     },
-    // @LittleMoonbeam
     {
       id: '9',
       title: 'Sleeping Beauty',
