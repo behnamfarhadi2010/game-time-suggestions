@@ -18,7 +18,7 @@ export const games: Game[] = [
     minAge: 2,
     maxAge: 10,
     timeRequired: 10,
-    videoId: "MGKcmXAkXhQ",
+    videoId: "kWw1KsQOBFo",
     tags: ["indoor", "outdoor", "active"]
   },
   {
@@ -28,7 +28,7 @@ export const games: Game[] = [
     minAge: 3,
     maxAge: 8,
     timeRequired: 10,
-    videoId: "lob3mrCjkCQ",
+    videoId: "OLrYzY3jVPY",
     tags: ["indoor", "learning", "group"]
   },
   {
@@ -38,7 +38,7 @@ export const games: Game[] = [
     minAge: 3,
     maxAge: 7,
     timeRequired: 5,
-    videoId: "gRW5qeWLwfY",
+    videoId: "i4Hl7VLjcg8",
     tags: ["indoor", "outdoor", "quiet", "travel"]
   },
   {
@@ -48,7 +48,7 @@ export const games: Game[] = [
     minAge: 4,
     maxAge: 10,
     timeRequired: 15,
-    videoId: "pDGTNBsovgw",
+    videoId: "qXnmWJTUdHo",
     tags: ["indoor", "active", "group", "party"]
   },
   {
@@ -68,7 +68,7 @@ export const games: Game[] = [
     minAge: 2,
     maxAge: 6,
     timeRequired: 5,
-    videoId: "MjCEHbp0EZ0",
+    videoId: "iJaUXUgS6XE",
     tags: ["indoor", "active", "simple"]
   },
   {
@@ -78,7 +78,7 @@ export const games: Game[] = [
     minAge: 4,
     maxAge: 10,
     timeRequired: 15,
-    videoId: "iDlrN-OsI4Q",
+    videoId: "oXWMxGcQjg4",
     tags: ["indoor", "outdoor", "active", "group"]
   },
   {
@@ -88,7 +88,7 @@ export const games: Game[] = [
     minAge: 4,
     maxAge: 12,
     timeRequired: 20,
-    videoId: "6PKMZS-hWJM",
+    videoId: "GRxofEmo3HA",
     tags: ["indoor", "outdoor", "thinking", "active"]
   },
   {
@@ -98,7 +98,7 @@ export const games: Game[] = [
     minAge: 5,
     maxAge: 12,
     timeRequired: 15,
-    videoId: "7KPaxKUDj6I",
+    videoId: "veyZNyurlwU",
     tags: ["indoor", "creative", "science"]
   },
   {
@@ -108,7 +108,7 @@ export const games: Game[] = [
     minAge: 4,
     maxAge: 10,
     timeRequired: 15,
-    videoId: "9PA3RsVVdh8",
+    videoId: "fZzswQaICfE",
     tags: ["outdoor", "active", "classic"]
   },
   {
@@ -118,7 +118,7 @@ export const games: Game[] = [
     minAge: 1,
     maxAge: 5,
     timeRequired: 20,
-    videoId: "r2S5Fcc6-2o",
+    videoId: "CIpkX_wZfPC",
     tags: ["indoor", "creative", "art", "messy"]
   },
   {
@@ -128,7 +128,7 @@ export const games: Game[] = [
     minAge: 3,
     maxAge: 8,
     timeRequired: 10,
-    videoId: "xvRARkOcI6c",
+    videoId: "AT8i3v4lcG0",
     tags: ["indoor", "outdoor", "active", "group"]
   }
 ];
