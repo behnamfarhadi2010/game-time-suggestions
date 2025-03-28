@@ -3,7 +3,13 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Youtube } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselNext, 
+  CarouselPrevious 
+} from '@/components/ui/carousel';
 
 interface Story {
   id: string;
@@ -61,39 +67,50 @@ const BedtimeStories: React.FC = () => {
         </Button>
       </div>
       
-      <ScrollArea className="w-full whitespace-nowrap pb-4">
-        <div className="flex space-x-4">
-          {stories.map((story) => (
-            <Card 
-              key={story.id} 
-              className="w-72 flex-shrink-0 rounded-xl border-kid-purple/20 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => openYoutubeVideo(story.videoId)}
-            >
-              <div className="relative h-40 bg-muted">
-                <img 
-                  src={story.thumbnailUrl} 
-                  alt={story.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="rounded-full bg-white/80 p-3">
-                    <Youtube className="h-8 w-8 text-red-600" />
+      <div className="relative">
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {stories.map((story) => (
+              <CarouselItem key={story.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <Card 
+                  className="rounded-xl border-kid-purple/20 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => openYoutubeVideo(story.videoId)}
+                >
+                  <div className="relative h-40 bg-muted">
+                    <img 
+                      src={story.thumbnailUrl} 
+                      alt={story.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="rounded-full bg-white/80 p-3">
+                        <Youtube className="h-8 w-8 text-red-600" />
+                      </div>
+                    </div>
+                    <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md">
+                      {story.duration}
+                    </div>
                   </div>
-                </div>
-                <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md">
-                  {story.duration}
-                </div>
-              </div>
-              <CardContent className="p-4">
-                <h3 className="font-semibold text-base truncate">{story.title}</h3>
-                <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
-                  <Youtube className="h-3 w-3 text-red-600" /> YouTube Kids
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </ScrollArea>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-base truncate">{story.title}</h3>
+                    <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
+                      <Youtube className="h-3 w-3 text-red-600" /> YouTube Kids
+                    </p>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-0 bg-white border-kid-purple/20 text-kid-purple hover:bg-kid-purple hover:text-white" />
+          <CarouselNext className="right-0 bg-white border-kid-purple/20 text-kid-purple hover:bg-kid-purple hover:text-white" />
+        </Carousel>
+      </div>
     </section>
   );
 };

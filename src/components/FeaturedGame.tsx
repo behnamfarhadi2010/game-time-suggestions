@@ -13,7 +13,7 @@ const FeaturedGame: React.FC = () => {
     name: "Musical Freeze Dance",
     ageRange: "3-8",
     timeRequired: 15,
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://images.unsplash.com/photo-1560541919-eb5c2da6a5a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80",
     id: "5" // Changed to match an actual game ID from the gameData
   };
 
