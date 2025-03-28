@@ -66,13 +66,15 @@ const CategoryCard: React.FC<CategoryProps> = ({ name, icon, color, bgColor }) =
 
 const CategoryCards: React.FC = () => {
   return (
-    <ScrollArea className="w-full">
-      <div className="flex space-x-4 pb-4 px-1">
-        {categories.map((category) => (
-          <CategoryCard key={category.name} {...category} />
-        ))}
-      </div>
-    </ScrollArea>
+    <div className="flex justify-center w-full">
+      <ScrollArea className="max-w-3xl w-full">
+        <div className="flex space-x-4 pb-4 px-1 justify-center">
+          {categories.map((category) => (
+            <CategoryCard key={category.name} {...category} />
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
   );
 };
 

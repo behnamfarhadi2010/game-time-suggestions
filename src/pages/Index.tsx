@@ -113,7 +113,7 @@ const Index: React.FC = () => {
         </section>
 
         {/* Categories Section */}
-        <section>
+        <section className="text-center">
           <h2 className="text-2xl font-bold text-center mb-6 text-kid-purple">
             Browse by Category
           </h2>
