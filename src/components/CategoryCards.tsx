@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Gamepad2, Brain, ArrowUp, ArrowDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface CategoryProps {
   name: string;
@@ -46,20 +46,21 @@ const categories: CategoryProps[] = [
 ];
 
 const CategoryCard: React.FC<CategoryProps> = ({ name, icon, color, bgColor }) => {
-  const navigate = useNavigate();
+  const categoryUrl = `/results?category=${name.toLowerCase().replace(' ', '-')}`;
   
   return (
-    <Card 
-      className="min-w-[180px] cursor-pointer transition-transform hover:scale-105 border-2 border-transparent hover:border-kid-purple/30"
-      onClick={() => navigate(`/results?category=${name.toLowerCase().replace(' ', '-')}`)}
-    >
-      <CardContent className="p-6 flex flex-col items-center gap-3">
-        <div className={`${bgColor} p-4 rounded-full ${color}`}>
-          {icon}
-        </div>
-        <h3 className={`font-bold ${color}`}>{name}</h3>
-      </CardContent>
-    </Card>
+    <Link to={categoryUrl}>
+      <Card 
+        className="min-w-[180px] cursor-pointer transition-transform hover:scale-105 border-2 border-transparent hover:border-kid-purple/30"
+      >
+        <CardContent className="p-6 flex flex-col items-center gap-3">
+          <div className={`${bgColor} p-4 rounded-full ${color}`}>
+            {icon}
+          </div>
+          <h3 className={`font-bold ${color}`}>{name}</h3>
+        </CardContent>
+      </Card>
+    </Link>
   );
 };
 
