@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Results from "./pages/Results";
 import NotFound from "./pages/NotFound";
+import PiChatbot from "./components/PiChatbot";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/results" element={<Results />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <PiChatbot />
       </Router>
     </TooltipProvider>
   </QueryClientProvider>
