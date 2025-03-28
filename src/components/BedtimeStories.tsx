@@ -14,34 +14,34 @@ interface Story {
 }
 
 const BedtimeStories: React.FC = () => {
-  // This would typically come from an API or backend
+  // Real YouTube bedtime stories with actual video IDs
   const stories: Story[] = [
     {
       id: '1',
       title: 'The Three Little Pigs',
-      thumbnailUrl: '/placeholder.svg',
+      thumbnailUrl: `https://img.youtube.com/vi/QLR2pLUsl-s/maxresdefault.jpg`,
       videoId: 'QLR2pLUsl-s',
       duration: '8 mins'
     },
     {
       id: '2',
       title: 'Goldilocks and the Three Bears',
-      thumbnailUrl: '/placeholder.svg',
+      thumbnailUrl: `https://img.youtube.com/vi/LDMWJCrDmxo/maxresdefault.jpg`,
       videoId: 'LDMWJCrDmxo',
       duration: '10 mins'
     },
     {
       id: '3',
       title: 'Little Red Riding Hood',
-      thumbnailUrl: '/placeholder.svg',
-      videoId: 'LDMWJCrDmxo',
+      thumbnailUrl: `https://img.youtube.com/vi/0W86K1jBJFI/maxresdefault.jpg`,
+      videoId: '0W86K1jBJFI',
       duration: '7 mins'
     },
     {
       id: '4',
       title: 'Jack and the Beanstalk',
-      thumbnailUrl: '/placeholder.svg',
-      videoId: 'LDMWJCrDmxo',
+      thumbnailUrl: `https://img.youtube.com/vi/zurz-pL-uzw/maxresdefault.jpg`,
+      videoId: 'zurz-pL-uzw',
       duration: '12 mins'
     }
   ];
