@@ -81,7 +81,7 @@
     @apply font-bold;
   }
   
-  /* Apply Comic Sans only to desktop version */
+  /* Apply Comic Sans only to desktop version - CHANGED: Now using regular font for mobile too */
   @media (min-width: 768px) {
     body {
       font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
