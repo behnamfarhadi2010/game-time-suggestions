@@ -30,11 +30,20 @@ export const enhanceGameSuggestions = async (
   }
 
   try {
-    // Prepare data for the Gemini API
+    // Add randomness factor and additional context for diverse recommendations
+    const randomSeed = Math.floor(Math.random() * 1000);
+    const randomScenario = getRandomScenario();
+
+    // Prepare data for the Gemini API with more dynamic prompting
     const prompt = `
       I have a ${age} year old child and ${time} minutes to play.
+      ${randomScenario}
       I have these game options: ${games.map(g => g.title).join(', ')}.
-      Please rank these games from best to worst for my situation and explain why.
+      
+      Please rank these games from best to worst for my specific situation and explain why.
+      Consider different factors like educational value, fun factor, and engagement level.
+      Use random seed ${randomSeed} to ensure diversity in your recommendations.
+      
       Return ONLY a JSON array with game titles in order from best to worst.
       Format: ["Game1", "Game2", "Game3"]
     `;
@@ -55,8 +64,10 @@ export const enhanceGameSuggestions = async (
           }
         ],
         generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 1024
+          temperature: 0.7, // Increased from 0.4 to add more randomness
+          maxOutputTokens: 1024,
+          topK: 40,
+          topP: 0.95
         }
       })
     });
@@ -108,4 +119,22 @@ export const enhanceGameSuggestions = async (
     console.error("Error calling Gemini API:", error);
     return games;
   }
+};
+
+// Helper function to get a random scenario to add variety to the AI prompt
+const getRandomScenario = (): string => {
+  const scenarios = [
+    "We're at home and need a quiet activity.",
+    "We're feeling energetic today and need something active.",
+    "We want a game that helps with learning.",
+    "We're looking for something creative.",
+    "It's a rainy day and we need an indoor activity.",
+    "We want a game that involves the whole family.",
+    "We're tired and need something calm and relaxing.",
+    "We want to practice problem-solving skills.",
+    "We need a game that requires minimal setup.",
+    "We want a game that helps with physical coordination."
+  ];
+  
+  return scenarios[Math.floor(Math.random() * scenarios.length)];
 };

@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import GameCard from '../components/GameCard';
 import ApiKeyInput from '../components/ApiKeyInput';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, Gamepad2, Brain } from 'lucide-react';
+import { ArrowLeft, Clock, Gamepad2, Brain, Sparkles } from 'lucide-react';
 import { enhanceGameSuggestions, getGeminiApiKey } from '../services/aiService';
 import { toast } from 'sonner';
 
@@ -16,6 +16,7 @@ const Results: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isAiEnabled, setIsAiEnabled] = useState(false);
   const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [aiUsedCount, setAiUsedCount] = useState(0); // Track how many times AI was used
 
   const age = Number(searchParams.get('age') || '4');
   const time = Number(searchParams.get('time') || '15');
@@ -52,12 +53,27 @@ const Results: React.FC = () => {
     }
     
     setIsAiProcessing(true);
-    toast.info("AI is analyzing your game options...");
+    setAiUsedCount(prev => prev + 1);
+    
+    const toastMessage = aiUsedCount > 0 
+      ? "AI is creating new recommendations..." 
+      : "AI is analyzing your game options...";
+    
+    toast.info(toastMessage, {
+      icon: <Sparkles className="h-4 w-4 text-yellow-400" />
+    });
     
     try {
       const enhancedGames = await enhanceGameSuggestions(gamesList, age, time);
       setGames(enhancedGames);
-      toast.success("Games have been sorted by AI recommendation");
+      
+      const successMessage = aiUsedCount > 0 
+        ? "New AI recommendations generated" 
+        : "Games have been sorted by AI recommendation";
+        
+      toast.success(successMessage, {
+        icon: <Sparkles className="h-4 w-4 text-yellow-400" />
+      });
     } catch (error) {
       console.error("Error enhancing game suggestions:", error);
       toast.error("Failed to get AI recommendations");
@@ -92,7 +108,7 @@ const Results: React.FC = () => {
                   disabled={isAiProcessing || !getGeminiApiKey()}
                 >
                   <Brain className="mr-2 h-4 w-4" />
-                  {isAiProcessing ? 'Processing...' : 'Get AI Recommendations'}
+                  {isAiProcessing ? 'Processing...' : (aiUsedCount > 0 ? 'Get New AI Recommendations' : 'Get AI Recommendations')}
                 </Button>
               )}
               <ApiKeyInput />
