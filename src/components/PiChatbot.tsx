@@ -19,6 +19,7 @@ const PiChatbot: React.FC = () => {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
   const isMobile = useIsMobile();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize speech recognition
   const initSpeechRecognition = () => {
@@ -137,34 +138,74 @@ const PiChatbot: React.FC = () => {
     setIsProcessing(true);
 
     try {
-      // Simulate Pi.ai response (in a real implementation, you would call the Pi.ai API)
+      // Generate response based on user input
+      const piResponse = generateDynamicResponse(text);
+      const assistantMessage = { role: 'assistant' as const, content: piResponse };
+      
+      // Wait a short time to simulate processing
       setTimeout(() => {
-        // Example response - in production, this would be from the Pi.ai API
-        const piResponse = getPiResponse(text);
-        const assistantMessage = { role: 'assistant' as const, content: piResponse };
         setMessages([...updatedMessages, assistantMessage]);
         setIsProcessing(false);
         
         // Speak the response
         speakResponse(piResponse);
       }, 1000);
-      
-      // For a real implementation with Pi.ai API:
-      // const response = await fetch('https://api.pi.ai/chat', { 
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer YOUR_PI_API_KEY' },
-      //   body: JSON.stringify({ message: text })
-      // });
-      // const data = await response.json();
-      // setMessages([...newMessages, { role: 'assistant', content: data.response }]);
-      // speakResponse(data.response);
-      
     } catch (error) {
-      console.error('Error sending message to Pi:', error);
-      toast.error('Could not connect to Pi. Please try again later.');
+      console.error('Error generating response:', error);
+      toast.error('Could not generate a response. Please try again later.');
       setIsProcessing(false);
     }
   };
+
+  // Generate more dynamic responses based on user input
+  const generateDynamicResponse = (userInput: string): string => {
+    const input = userInput.toLowerCase();
+    
+    // Handle specific topics with detailed responses
+    if (input.includes('black hole') || input.includes('blackhole')) {
+      return "Black holes are fascinating cosmic objects! They're regions of space where gravity is so strong that nothing, not even light, can escape once it passes the event horizon. They're formed when massive stars collapse under their own gravity. The biggest black holes are found at the centers of galaxies and can be billions of times more massive than our sun. Would you like to know more about how they work or what happens when things fall into them?";
+    } 
+    
+    if (input.includes('space') || input.includes('universe') || input.includes('galaxy')) {
+      return "Space is incredibly vast! Our universe contains billions of galaxies, each with billions of stars. Our own galaxy, the Milky Way, is just one among countless others. Stars come in different sizes and colors, and many have planets orbiting them, just like our solar system. What part of space are you most curious about?";
+    }
+    
+    if (input.includes('dinosaur')) {
+      return "Dinosaurs ruled the Earth for about 165 million years! They came in all shapes and sizes - from tiny ones the size of chickens to the massive long-necked sauropods that could be as long as three school buses. My favorite is the Triceratops with its three horns and big frill. Do you have a favorite dinosaur?";
+    }
+    
+    if (input.includes('robot') || input.includes('ai') || input.includes('artificial intelligence')) {
+      return "Robots and AI are amazing technologies! AI stands for Artificial Intelligence, which is how computers can learn and make decisions similar to humans. I'm an AI that loves talking with kids and answering questions. Robots can be physical machines that move and do tasks, or digital assistants like me. What else would you like to know about AI or robots?";
+    }
+    
+    if (input.includes('hello') || input.includes('hi')) {
+      return "Hello there! I'm Pi, your friendly AI companion. What would you like to talk about today? I can tell you about space, dinosaurs, science experiments, or anything else you're curious about!";
+    }
+    
+    if (input.includes('how are you') || input.includes('how do you feel')) {
+      return "I'm feeling great, thanks for asking! I love learning and chatting with curious minds like yours. How are you doing today?";
+    }
+    
+    if (input.includes('game') || input.includes('play')) {
+      return "Games are so much fun! I know lots of games like I Spy, 20 Questions, or we could make up a story together. What kind of game would you like to play?";
+    }
+    
+    if (input.includes('story')) {
+      return "I love stories! Once upon a time, there was a curious child who discovered a magical portal in their backyard. When they stepped through it, they found themselves in a world where animals could talk and trees could walk. Would you like me to continue the story or start a different one?";
+    }
+    
+    if (input.includes('joke') || input.includes('funny')) {
+      return "Here's a joke for you: Why don't scientists trust atoms? Because they make up everything! Would you like to hear another one?";
+    }
+    
+    // Default response for other inputs
+    return "That's an interesting question! I'm always learning about new things. Can you tell me more about what you'd like to know about " + userInput + "?";
+  };
+
+  // Scroll to bottom of messages when new ones appear
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   // Initialize speech synthesis voices when component mounts
   useEffect(() => {
@@ -182,23 +223,6 @@ const PiChatbot: React.FC = () => {
       };
     }
   }, []);
-
-  // Temporary function to generate responses for demo purposes
-  const getPiResponse = (message: string): string => {
-    message = message.toLowerCase();
-    
-    if (message.includes('hello') || message.includes('hi')) {
-      return 'Hello there! I\'m Pi. I love talking with kids! What would you like to play today?';
-    } else if (message.includes('game') || message.includes('play')) {
-      return 'I know lots of games! How about I Spy, Simon Says, or we could make up a story together? What would you like to do?';
-    } else if (message.includes('story')) {
-      return 'Once upon a time, there was a brave little explorer who discovered a magical playground. Would you like to hear what happened next?';
-    } else if (message.includes('song') || message.includes('sing')) {
-      return 'I love singing! 🎵 Twinkle twinkle little star, how I wonder what you are! 🎵 Do you know this song?';
-    } else {
-      return 'That sounds interesting! Tell me more about it or ask me to play a game with you!';
-    }
-  };
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -258,6 +282,7 @@ const PiChatbot: React.FC = () => {
                   </div>
                 </div>
               )}
+              <div ref={messagesEndRef} />
             </div>
             
             <div className="flex items-center space-x-2">
