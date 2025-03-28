@@ -48,7 +48,8 @@ export const enhanceGameSuggestions = async (
       Format: ["Game1", "Game2", "Game3"]
     `;
 
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + apiKey, {
+    // Updated API endpoint to use the correct version
+    const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=' + apiKey, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ export const enhanceGameSuggestions = async (
           }
         ],
         generationConfig: {
-          temperature: 0.7, // Increased from 0.4 to add more randomness
+          temperature: 0.7,
           maxOutputTokens: 1024,
           topK: 40,
           topP: 0.95
