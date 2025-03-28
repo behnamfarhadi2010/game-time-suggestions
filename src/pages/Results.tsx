@@ -19,6 +19,8 @@ const Results: React.FC = () => {
 
   const age = Number(searchParams.get('age') || '4');
   const time = Number(searchParams.get('time') || '15');
+  const category = searchParams.get('category') || '';
+  const featured = searchParams.get('featured') || '';
 
   // Check if AI can be used
   useEffect(() => {
@@ -29,7 +31,8 @@ const Results: React.FC = () => {
   useEffect(() => {
     // Simulate loading delay
     const timer = setTimeout(async () => {
-      const foundGames = findGames(age, time);
+      // Use the appropriate search parameters
+      let foundGames = findGames(age, time, category, featured);
       setGames(foundGames);
       setLoading(false);
       
@@ -40,7 +43,7 @@ const Results: React.FC = () => {
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [age, time, isAiEnabled]);
+  }, [age, time, category, featured, isAiEnabled]);
 
   const enhanceWithAi = async (gamesList: Game[]) => {
     if (!getGeminiApiKey()) {

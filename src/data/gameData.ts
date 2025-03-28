@@ -133,11 +133,40 @@ export const games: Game[] = [
   }
 ];
 
-export const findGames = (age: number, availableTime: number): Game[] => {
-  return games.filter(
+export const findGames = (age: number, availableTime: number, category?: string, featuredId?: string): Game[] => {
+  // If a specific featured game is requested, find and return just that game
+  if (featuredId) {
+    const featuredGame = games.find(game => game.id === featuredId);
+    return featuredGame ? [featuredGame] : [];
+  }
+  
+  // Filter games based on age and time
+  let filteredGames = games.filter(
     game => 
       age >= game.minAge && 
       age <= game.maxAge && 
       game.timeRequired <= availableTime
   );
+  
+  // Additional filtering by category if provided
+  if (category && category !== 'all') {
+    const categoryMap: Record<string, string[]> = {
+      'indoor': ['indoor'],
+      'outdoor': ['outdoor'],
+      'active': ['active'],
+      'quiet': ['quiet'],
+      'learning': ['learning'],
+      'creative': ['creative', 'art'],
+      'group': ['group', 'party']
+    };
+    
+    const relevantTags = categoryMap[category] || [];
+    if (relevantTags.length > 0) {
+      filteredGames = filteredGames.filter(game => 
+        game.tags.some(tag => relevantTags.includes(tag))
+      );
+    }
+  }
+  
+  return filteredGames;
 };

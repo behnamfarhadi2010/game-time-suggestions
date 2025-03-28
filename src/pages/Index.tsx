@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
 import Header from '../components/Header';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Gamepad2, Clock, Brain, ArrowDown, ArrowUp } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import CategoryCards from '../components/CategoryCards';
 import FeaturedGame from '../components/FeaturedGame';
+import BedtimeStories from '../components/BedtimeStories';
 import { useNavigate } from 'react-router-dom';
 
 const Index: React.FC = () => {
@@ -113,12 +113,15 @@ const Index: React.FC = () => {
         </section>
 
         {/* Categories Section */}
-        <section className="mt-12">
+        <section>
           <h2 className="text-2xl font-bold text-center mb-6 text-kid-purple">
             Browse by Category
           </h2>
           <CategoryCards />
         </section>
+        
+        {/* Bedtime Stories Section */}
+        <BedtimeStories />
       </main>
     </div>
   );

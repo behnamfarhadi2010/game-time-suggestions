@@ -14,7 +14,7 @@ const FeaturedGame: React.FC = () => {
     ageRange: "3-8",
     timeRequired: 15,
     imageUrl: "/placeholder.svg",
-    id: "featured-game"
+    id: "5" // Changed to match an actual game ID from the gameData
   };
 
   return (
